@@ -2,7 +2,7 @@ import networkx
 import matplotlib
 
 
-def make_directories_if_missing():
+def load_data():
     pass
 
 
@@ -31,7 +31,6 @@ def plot_network():
 
 
 if __name__ == "__main__":
-    make_directories_if_missing()
     plot_bar()
     plot_pie()
     plot_line()
