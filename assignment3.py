@@ -21,11 +21,22 @@ def plot_bar():
     # Data Analysis: Find average response time for each borough
     boroughs = FIRE_DATAFRAME.alarm_box_borough.unique()
     average_response_times = dict()
+    response_times_std = dict()
     for borough in boroughs:
         borough_incidents = FIRE_DATAFRAME.loc[(FIRE_DATAFRAME["alarm_box_borough"] == borough) & (FIRE_DATAFRAME["valid_incident_rspns_time_indc"] == "Y")]
         borough_average_response_time = borough_incidents["incident_response_seconds_qy"].astype(float).mean()
+        borough_response_time_std = borough_incidents["incident_response_seconds_qy"].astype(float).std()
         average_response_times[borough] = borough_average_response_time
-
+        response_times_std[borough] = borough_response_time_std
+    # Data Visualization
+    plt.figure(figsize=(10, 6))
+    plt.title("Fire Response Time by Borough in NYC")
+    plt.ylabel("Average Incident Response Time (seconds)")
+    plt.xlabel("Borough Name")
+    plt.bar(boroughs, average_response_times.values(), yerr=response_times_std.values(), color="bgrcmyk")
+    plt.tight_layout()
+    plt.savefig("./bar/chart.jpg")
+    plt.show()
 
 
 def plot_pie():
