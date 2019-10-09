@@ -4,26 +4,21 @@ import pandas as pd
 from sodapy import Socrata
 
 NEW_YORK_DATA_AUTH_TOKEN = "QwLSoW0YRtDKSHtGNty0L7b8G"
-NEW_YORK_DATA_CLIENT = None
+NEW_YORK_DATA_CLIENT = Socrata("data.cityofnewyork.us", NEW_YORK_DATA_AUTH_TOKEN)
 FIRE_RESOURCE_NAME = "8m42-w767"
-FIRE_DATAFRAME = None
-
-
-def load_data():
-    # Load Fire Incident Dispatch Data
-    global NEW_YORK_DATA_CLIENT, FIRE_DATAFRAME
-    NEW_YORK_DATA_CLIENT = Socrata("data.cityofnewyork.us", NEW_YORK_DATA_AUTH_TOKEN)
-    firedata = NEW_YORK_DATA_CLIENT.get(FIRE_RESOURCE_NAME, limit=100)  # TODO: Replace with 10000 after testing
-    FIRE_DATAFRAME = pd.DataFrame.from_records(firedata)
 
 
 def plot_bar():
+    # Ingest: Load Fire Incident Dispatch Data
+    data = NEW_YORK_DATA_CLIENT.get(FIRE_RESOURCE_NAME, limit=100000)  # TODO: Replace with 10000 after testing
+    firedata = pd.DataFrame.from_records(data)
     # Data Analysis: Find average response time for each borough
-    boroughs = FIRE_DATAFRAME.alarm_box_borough.unique()
+    boroughs = firedata.alarm_box_borough.unique()
     average_response_times = dict()
     response_times_std = dict()
     for borough in boroughs:
-        borough_incidents = FIRE_DATAFRAME.loc[(FIRE_DATAFRAME["alarm_box_borough"] == borough) & (FIRE_DATAFRAME["valid_incident_rspns_time_indc"] == "Y")]
+        borough_incidents = firedata.loc[(firedata["alarm_box_borough"] == borough) & (
+                firedata["valid_incident_rspns_time_indc"] == "Y")]
         borough_average_response_time = borough_incidents["incident_response_seconds_qy"].astype(float).mean()
         borough_response_time_std = borough_incidents["incident_response_seconds_qy"].astype(float).std()
         average_response_times[borough] = borough_average_response_time
@@ -44,6 +39,11 @@ def plot_pie():
 
 
 def plot_line():
+    # dates = firedata["incident_datetime"].astype("datetime64").dt.date.unique()
+    # for date in dates:
+    #     incidents = firedata.loc[firedata["incident_datetime"].astype("datetime64").dt.date == date]
+    #     incident_count = len(incidents.index)
+    #     print(date, incident_count)
     pass
 
 
@@ -60,7 +60,6 @@ def plot_network():
 
 
 if __name__ == "__main__":
-    load_data()
     plot_bar()
     plot_pie()
     plot_line()
