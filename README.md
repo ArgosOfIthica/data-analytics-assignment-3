@@ -1,5 +1,10 @@
 # Data Analytics Assignment 3
 
+# Dependencies
+
+This project depends on the sodapy (Socratic Open Data API Python) package. Install it using:
+pip install sodapy
+
 ## Contributors
 - Bradley Shrader
 - Joe Schmidt
