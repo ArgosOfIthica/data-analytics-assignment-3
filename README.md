@@ -7,8 +7,11 @@
 
 ## Dependencies
 
-This project depends on the sodapy (Socratic Open Data API Python) package. Install it using:
-pip install sodapy
+This project depends on the following packages:
+- [sodapy](https://pypi.org/project/sodapy/)
+- [MatPlotLib](https://pypi.org/project/matplotlib/)
+- [NetworkX](https://pypi.org/project/networkx/)
+
 
 ## Project Description
 
