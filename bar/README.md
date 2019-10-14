@@ -12,7 +12,7 @@ scene, how long it took them to respond to the incident, and what level of alarm
 
 ## Data Analytics Performed
 
-The first 10,000 data entries are imported using SODApy (Socrata Open Data API for Python) to be processed by Pandas.
+All data entries from the previous year are imported using SODApy (Socrata Open Data API for Python) to be processed by Pandas.
 
 Using pandas, the data are sorted by the borough in which the incident occurred. Then, the average response time is
 calculated for rows which have valid response times listed. The standard deviation is also calculated for this mean.
