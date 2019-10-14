@@ -37,16 +37,13 @@ def plot_bar():
         response_times_std[borough] = borough_response_time_std
     # Data Visualization
     plt.figure(figsize=(10, 6))
-    plt.title(f"Fire Response Time by Borough in NYC\n({firedata.incident_datetime.astype('datetime64').min():%B %Y} - {firedata.incident_datetime.astype('datetime64').max():%B %Y})")
+    plt.title(
+        f"Fire Response Time by Borough in NYC\n({firedata.incident_datetime.astype('datetime64').min():%B %Y} - {firedata.incident_datetime.astype('datetime64').max():%B %Y})")
     plt.ylabel("Average Incident Response Time (seconds)")
     plt.xlabel("Borough Name")
     plt.bar(boroughs, average_response_times.values(), yerr=response_times_std.values(), color="bgrcmyk")
     plt.tight_layout()
     plt.savefig("./bar/chart.jpg")
-
-
-def plot_pie():
-    pass
 
 
 def plot_line():
@@ -69,10 +66,15 @@ def plot_line():
     plt.xticks(unique_years, unique_years, rotation="vertical")
     for breed in top_breeds:
         # print(breed)
-        plt.plot(unique_years, [len(dog_data.loc[(dog_data["breedname"] == breed) & (dog_data["animalbirth"].astype("int") == year)].index)
-                                for year in unique_years], label=breed)
+        plt.plot(unique_years, [
+            len(dog_data.loc[(dog_data["breedname"] == breed) & (dog_data["animalbirth"].astype("int") == year)].index)
+            for year in unique_years], label=breed)
     plt.legend(loc='upper left', fontsize="small")
     plt.savefig("./line/chart.jpg")
+
+
+def plot_pie():
+    pass
 
 
 def plot_scatter():
@@ -89,8 +91,8 @@ def plot_network():
 
 if __name__ == "__main__":
     plot_bar()
-    plot_pie()
     plot_line()
+    plot_pie()
     plot_scatter()
     plot_histogram()
     plot_network()
