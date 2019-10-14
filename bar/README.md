@@ -18,7 +18,7 @@ calculated for rows which have valid response times listed. The standard deviati
 
 ## Data Visualization
 
-The data are plotted in a bar chart which lists the average response time for incidents (of the most recent 10,000) by
+The data are plotted in a bar chart which lists the average response time for incidents (in the past year) by
 the borough in New York City in which they occurred. This chart is both useful and meaningful since it gives at-a-glance
 information about the efficiency of fire departments in each borough/neighborhood in New York City.
 
