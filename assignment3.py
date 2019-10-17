@@ -82,8 +82,22 @@ def plot_scatter():
 
 
 def plot_histogram():
-    pass
+    #Ingest
+    data = NEW_YORK_DATA_CLIENT.get(DOG_RESOURCE_NAME,
+                                    select="date_extract_woy(licenseissueddate), rownumber, animalname, `extract-year` ",
+                                    where="`extract-year` == '2018' and licenseissueddate between '2017-01-01T00:00:00' and '2018-01-01T00:00:00'",
+                                    limit=1000000)
+    dog_data = pd.DataFrame.from_records(data)
+    dog_data.drop_duplicates(keep=False, inplace=True)
 
+    #Analytics
+    listdata = dog_data.date_extract_woy_licenseissueddate.tolist()
+    listdata = list(map(lambda x: int(x), listdata))
+    # Visualization
+    plt.hist(x=listdata, bins=52)
+    plt.title("Number of Licenses Issued in 2017 over Time")
+    plt.ylabel("Number of Licenses")
+    plt.xlabel("Weeks ")
 
 def plot_network():
     pass
