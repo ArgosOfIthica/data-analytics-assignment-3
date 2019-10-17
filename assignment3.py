@@ -74,11 +74,42 @@ def plot_line():
 
 
 def plot_pie():
-    pass
+    #Ryan Sims
+    data = NEW_YORK_DATA_CLIENT.get(FIRE_RESOURCE_NAME, limit=100000)  # TODO: Replace with 10000 after testing
+    firedata = pd.DataFrame.from_records(data)
+    # Data Analysis: Find number of incidents per zipcode for each borough
+    dict={}
+    for i in firedata.incident_classification_group:
+        if i not in dict:
+            dict[i]=1
+        else:
+            dict[i]+=1
+    plt.figure(figsize=(10, 6))
+    plt.title("Percentage of Firebox calls of certain types")
+    plt.pie(x=dict.values(), labels=dict.keys())
+    plt.savefig("./pie/chart.jpg")
+    plt.show()
 
 
 def plot_scatter():
-    pass
+    #Ryan Sims
+    data = NEW_YORK_DATA_CLIENT.get(FIRE_RESOURCE_NAME, limit=10000)  # TODO: Replace with 10000 after testing
+    firedata = pd.DataFrame.from_records(data)
+    firedata=firedata.dropna(axis=0, subset = ['incident_datetime', 'incident_travel_tm_seconds_qy'])
+    for i in range(len(firedata.incident_datetime)):
+        hms=list(map(float, firedata.incident_datetime[i].split("T")[1].split(":")))
+        firedata.incident_datetime[i]=hms[0]+hms[1]/60+hms[2]/60/60
+    plt.figure()
+    plt.title("Plot of Time of day against response time")
+    plt.ylabel("Incident Response Time (minutes)")
+    plt.xlabel("Time of day")
+    plt.yticks([60*i for i in range(24)],[i for i in range(24)])
+    plt.xticks([i for i in range(24)],[str(i)+":00" for i in range(24)])
+    locs, labels = plt.xticks()
+    plt.setp(labels, rotation=90)
+    plt.scatter(x=firedata.incident_datetime,y=firedata.incident_travel_tm_seconds_qy, s=2, )
+    plt.savefig("./scatter/chart.jpg")
+    plt.show()
 
 
 def plot_histogram():
