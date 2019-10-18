@@ -1,4 +1,4 @@
-import networkx
+import networkx as nx
 import matplotlib.pyplot as plt
 import pandas as pd
 from sodapy import Socrata
@@ -8,6 +8,8 @@ NEW_YORK_DATA_AUTH_TOKEN = "QwLSoW0YRtDKSHtGNty0L7b8G"
 NEW_YORK_DATA_CLIENT = Socrata("data.cityofnewyork.us", NEW_YORK_DATA_AUTH_TOKEN)
 FIRE_RESOURCE_NAME = "8m42-w767"
 DOG_RESOURCE_NAME = "nu7n-tubp"
+WIFI_RESOURCE_NAME = "yjub-udmw"
+
 
 
 def plot_bar():
@@ -75,7 +77,7 @@ def plot_line():
 
 def plot_pie():
     #Ryan Sims
-    data = NEW_YORK_DATA_CLIENT.get(FIRE_RESOURCE_NAME, limit=100000)  # TODO: Replace with 10000 after testing
+    data = NEW_YORK_DATA_CLIENT.get(FIRE_RESOURCE_NAME, limit=100000)
     firedata = pd.DataFrame.from_records(data)
     # Data Analysis: Find number of incidents per zipcode for each borough
     dict={}
@@ -93,7 +95,7 @@ def plot_pie():
 
 def plot_scatter():
     #Ryan Sims
-    data = NEW_YORK_DATA_CLIENT.get(FIRE_RESOURCE_NAME, limit=10000)  # TODO: Replace with 10000 after testing
+    data = NEW_YORK_DATA_CLIENT.get(FIRE_RESOURCE_NAME, limit=10000)
     firedata = pd.DataFrame.from_records(data)
     firedata=firedata.dropna(axis=0, subset = ['incident_datetime', 'incident_travel_tm_seconds_qy'])
     for i in range(len(firedata.incident_datetime)):
@@ -129,10 +131,32 @@ def plot_histogram():
     plt.title("Number of Licenses Issued in 2017 over Time")
     plt.ylabel("Number of Licenses")
     plt.xlabel("Weeks ")
+    plt.savefig("./histogram/chart.jpg")
 
 def plot_network():
-    pass
+    #Ingest
+    data = NEW_YORK_DATA_CLIENT.get(WIFI_RESOURCE_NAME,
+                                    select="objectid, provider, x, y, borough",
+                                    where="provider not like 'Unknown'",
+                                    limit=1000000)
+    wifi_data = pd.DataFrame.from_records(data)
+    wifi_data.drop_duplicates(keep=False, inplace=True)
 
+    #Analytics
+    top_providers = dict()
+    for borough in range(1, 6):
+        wf_per_borough = wifi_data.loc[(wifi_data['borough'] == str(borough))]
+        top = list(wf_per_borough.provider.value_counts().index[:4])
+        top_providers.update( {str(borough) : top})
+    print(top_providers)
+
+    # Visualization
+    plt.figure()
+    plt.title("Top 4 Wifi providers over New York's 5 boroughs")
+    g = nx.DiGraph(top_providers)
+    nx.draw_circular(g, with_labels=True, node_size=600)
+    plt.show(block=False)
+    plt.savefig("./network/chart.jpg")
 
 if __name__ == "__main__":
     plot_bar()
@@ -141,4 +165,3 @@ if __name__ == "__main__":
     plot_scatter()
     plot_histogram()
     plot_network()
-    plt.show()  # Show all plots at end
